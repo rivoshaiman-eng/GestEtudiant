@@ -1,0 +1,105 @@
+body {
+  margin: 0;
+  background: #101010;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.card {
+  border: none !important;
+  border-radius: 20px !important;
+}
+
+.table {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.form-control {
+  border-radius: 10px !important;
+}
+
+.btn {
+  border-radius: 15px !important;
+}
+
+/* LOGIN PAGE */
+.login-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1b1b1b, #080808 75%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-wrapper {
+  width: 520px;
+  text-align: center;
+  color: white;
+}
+
+.login-icon {
+  font-size: 64px;
+  color: #0d6efd;
+  margin-bottom: 35px;
+}
+
+.login-title {
+  font-size: 34px;
+  font-weight: 800;
+  margin-bottom: 55px;
+}
+
+.login-box {
+  background: rgba(95, 95, 95, 0.78);
+  padding: 45px;
+  border-radius: 22px;
+  text-align: left;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.login-box label {
+  color: white;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 18px 20px;
+  margin-bottom: 28px;
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.18);
+  background: rgba(70, 70, 70, 0.75);
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  outline: none;
+}
+
+.login-box input:focus {
+  border-color: rgba(255,255,255,0.45);
+}
+
+.login-box button {
+  width: 100%;
+  padding: 18px;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  background: rgba(35, 35, 35, 0.72);
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
+  transition: 0.2s;
+}
+
+.login-box button:hover {
+  background: rgba(20, 20, 20, 0.9);
+  transform: translateY(-1px);
+}
