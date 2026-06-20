@@ -1,11 +1,33 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import api from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("test@gmail.com");
+  const [password, setPassword] = useState("password");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const connecter = (e) => {
+  const connecter = async (e) => {
     e.preventDefault();
-    navigate("/ajout");
+    setError("");
+    setLoading(true);
+
+    try {
+      const { data } = await api.post("/login", { email, password });
+      
+      if (data?.token) {
+        localStorage.setItem("student_app_token", data.token);
+        navigate("/ajout");
+      } else {
+        setError("Erreur d'authentification");
+      }
+    } catch (err) {
+      setError(err?.response?.data?.message || "Identifiants incorrects");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,16 +40,30 @@ function Login() {
         <h1 className="login-title">Gestion des étudiants</h1>
 
         <div className="login-box">
+          {error && <div className="alert alert-danger">{error}</div>}
+          
           <form onSubmit={connecter}>
-            <label>Nom d'utilisateur</label>
-            <input type="text" defaultValue="admin" required />
+            <label>Email</label>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+              disabled={loading}
+            />
 
             <label>Mot de passe</label>
-            <input type="password" defaultValue="admin" required />
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+              disabled={loading}
+            />
 
-            <button type="submit">
+            <button type="submit" disabled={loading}>
               <i className="bi bi-box-arrow-in-right me-2"></i>
-              Se connecter
+              {loading ? "Connexion..." : "Se connecter"}
             </button>
           </form>
         </div>

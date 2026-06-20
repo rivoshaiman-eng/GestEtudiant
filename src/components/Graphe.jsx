@@ -9,6 +9,8 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 ChartJS.register(
   CategoryScale,
@@ -20,18 +22,33 @@ ChartJS.register(
 );
 
 function Graphe() {
+  const [etudiants, setEtudiants] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get("/etudiants");
+        setEtudiants(data || []);
+      } catch (err) {
+        setEtudiants([]);
+      }
+    })();
+  }, []);
+
+  const labels = etudiants.map(() => ""); // efface les noms
+  const dataValues = etudiants.map((e) => Number(e.moyenne));
+
+  const backgroundColor = dataValues.map((m) =>
+    m >= 10 ? "#198754" : m >= 5 ? "#ffc107" : "#dc3545"
+  );
+
   const data = {
-    labels: ["Martin", "Benali", "Dupont", "Koné"],
+    labels,
     datasets: [
       {
         label: "Moyenne des étudiants",
-        data: [14.5, 8, 11, 6.5],
-        backgroundColor: [
-          "#0d6efd",
-          "#198754",
-          "#ffc107",
-          "#dc3545"
-        ]
+        data: dataValues,
+        backgroundColor,
       }
     ]
   };
@@ -53,8 +70,10 @@ function Graphe() {
     scales: {
       x: {
         ticks: {
-          color: "white"
-        }
+          color: "white",
+          display: false // ne pas afficher les labels des noms
+        },
+        grid: { display: false }
       },
       y: {
         ticks: {

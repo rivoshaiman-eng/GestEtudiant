@@ -1,28 +1,36 @@
 import { useState } from "react";
-import { getEtudiants, saveEtudiants } from "../utils/storage";
+import api from "../services/api";
 
 function FormulaireEtudiant() {
   const [numEt, setNumEt] = useState("");
   const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
   const [moyenne, setMoyenne] = useState("");
   const [message, setMessage] = useState("");
 
-  const ajouterEtudiant = (e) => {
+  const ajouterEtudiant = async (e) => {
     e.preventDefault();
+    setMessage("");
 
-    const etudiants = getEtudiants();
-    const nouvelEtudiant = {
-      numEt,
-      nom,
-      moyenne: Number(moyenne),
-    };
+    try {
+      const payload = {
+        nom,
+        prenom,
+        numet: numEt,
+        moyenne: Number(moyenne),
+      };
 
-    saveEtudiants([...etudiants, nouvelEtudiant]);
-
-    setMessage("✅ Insertion réussie");
-    setNumEt("");
-    setNom("");
-    setMoyenne("");
+      const { data } = await api.post("/etudiants", payload);
+      if (data?.data) {
+        setMessage("✅ Insertion réussie");
+        setNumEt("");
+        setNom("");
+        setPrenom("");
+        setMoyenne("");
+      }
+    } catch (err) {
+      setMessage(err?.response?.data?.message || "Erreur lors de l'insertion");
+    }
   };
 
   return (
@@ -45,6 +53,16 @@ function FormulaireEtudiant() {
               className="form-control form-control-lg"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="col-md-3">
+            <label className="form-label">Prénom</label>
+            <input
+              className="form-control form-control-lg"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
               required
             />
           </div>

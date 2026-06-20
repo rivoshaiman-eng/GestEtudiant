@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { getEtudiants, saveEtudiants } from "../utils/storage";
+import api from "../services/api";
 
 function ListeEtudiant() {
-  const [etudiants, setEtudiants] = useState(() => getEtudiants());
+  const [etudiants, setEtudiants] = useState([]);
   const [message, setMessage] = useState("");
   const [recherche, setRecherche] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get("/etudiants");
+        setEtudiants(data || []);
+      } catch (err) {
+        // fallback: empty list
+        setEtudiants([]);
+      }
+    })();
+  }, []);
 
   const observation = (moyenne) => {
     if (moyenne >= 10) return "Admis";
@@ -13,35 +25,40 @@ function ListeEtudiant() {
     return "Exclus";
   };
 
-  const etudiantsFiltres = etudiants.filter(
-    (e) =>
-      e.nom.toLowerCase().includes(recherche.toLowerCase()) ||
-      e.numEt.toLowerCase().includes(recherche.toLowerCase())
-  );
+  const etudiantsFiltres = etudiants.filter((e) => {
+    const nom = (e.nom || "").toLowerCase();
+    const num = (e.numet || "").toLowerCase();
+    return nom.includes(recherche.toLowerCase()) || num.includes(recherche.toLowerCase());
+  });
 
-  const supprimer = (numEt) => {
-    const nouvelleListe = etudiants.filter((e) => e.numEt !== numEt);
-    setEtudiants(nouvelleListe);
-    saveEtudiants(nouvelleListe);
-    setMessage("✅ Suppression réussie");
+  const supprimer = async (id) => {
+    try {
+      await api.delete(`/etudiants/${id}`);
+      const nouvelleListe = etudiants.filter((e) => e.id !== id);
+      setEtudiants(nouvelleListe);
+      setMessage("✅ Suppression réussie");
+    } catch (err) {
+      setMessage("Erreur lors de la suppression");
+    }
   };
 
-  const modifier = (numEt) => {
-    const etudiant = etudiants.find((e) => e.numEt === numEt);
+  const modifier = async (id) => {
+    const etudiant = etudiants.find((e) => e.id === id);
+    if (!etudiant) return;
 
     const nouveauNom = prompt("Nouveau nom :", etudiant.nom);
     const nouvelleMoyenne = prompt("Nouvelle moyenne :", etudiant.moyenne);
 
     if (nouveauNom && nouvelleMoyenne) {
-      const nouvelleListe = etudiants.map((e) =>
-        e.numEt === numEt
-          ? { ...e, nom: nouveauNom, moyenne: Number(nouvelleMoyenne) }
-          : e
-      );
-
-      setEtudiants(nouvelleListe);
-      saveEtudiants(nouvelleListe);
-      setMessage("✅ Modification réussie");
+      try {
+        const payload = { nom: nouveauNom, moyenne: Number(nouvelleMoyenne) };
+        const { data } = await api.put(`/etudiants/${id}`, payload);
+        const nouvelleListe = etudiants.map((e) => (e.id === id ? data.data : e));
+        setEtudiants(nouvelleListe);
+        setMessage("✅ Modification réussie");
+      } catch (err) {
+        setMessage("Erreur lors de la modification");
+      }
     }
   };
 
@@ -79,8 +96,8 @@ function ListeEtudiant() {
 
             <tbody>
               {etudiantsFiltres.map((e) => (
-                <tr key={e.numEt}>
-                  <td>{e.numEt}</td>
+                <tr key={e.id}>
+                  <td>{e.numet}</td>
                   <td>{e.nom}</td>
                   <td>{e.moyenne}</td>
                   <td>
@@ -99,14 +116,14 @@ function ListeEtudiant() {
                   <td>
                     <button
                       className="btn btn-outline-warning me-2"
-                      onClick={() => modifier(e.numEt)}
+                      onClick={() => modifier(e.id)}
                     >
                       <i className="bi bi-pencil"></i>
                     </button>
 
                     <button
                       className="btn btn-outline-danger"
-                      onClick={() => supprimer(e.numEt)}
+                      onClick={() => supprimer(e.id)}
                     >
                       <i className="bi bi-trash"></i>
                     </button>
