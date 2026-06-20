@@ -5,22 +5,16 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+<<<<<<< HEAD
 function Graphe() {
   const [etudiants, setEtudiants] = useState([]);
 
@@ -51,23 +45,41 @@ function Graphe() {
         backgroundColor,
       }
     ]
+=======
+function Graphe({ etudiants }) {
+  const data = {
+    labels: etudiants.map((e) => e.nom),
+    datasets: [
+      {
+        label: "Moyenne des étudiants",
+        data: etudiants.map((e) => Number(e.moyenne)),
+        backgroundColor: etudiants.map((e) => {
+          const moyenne = Number(e.moyenne);
+          if (moyenne >= 10) return "#0d6efd";
+          if (moyenne >= 5) return "#ffc107";
+          return "#dc3545";
+        }),
+        borderRadius: 8,
+      },
+    ],
+>>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: {
-          color: "white"
-        }
+        labels: { color: "white" },
       },
       title: {
         display: true,
         text: "Histogramme des moyennes",
-        color: "white"
-      }
+        color: "white",
+      },
     },
     scales: {
+<<<<<<< HEAD
       x: {
         ticks: {
           color: "white",
@@ -75,17 +87,26 @@ function Graphe() {
         },
         grid: { display: false }
       },
+=======
+      x: { ticks: { color: "white" } },
+>>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
       y: {
-        ticks: {
-          color: "white"
-        },
         beginAtZero: true,
-        max: 20
-      }
-    }
+        max: 20,
+        ticks: { color: "white" },
+      },
+    },
   };
 
-  return <Bar data={data} options={options} />;
+  return (
+    <div style={{ height: "420px" }}>
+      {etudiants.length > 0 ? (
+        <Bar data={data} options={options} />
+      ) : (
+        <p className="text-white text-center">Aucune donnée à afficher</p>
+      )}
+    </div>
+  );
 }
 
 export default Graphe;

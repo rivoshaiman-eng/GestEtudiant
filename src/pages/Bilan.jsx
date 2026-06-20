@@ -4,6 +4,7 @@ import Graphe from "../components/Graphe";
 import api from "../services/api";
 
 function Bilan() {
+<<<<<<< HEAD
   const [stats, setStats] = useState({
     min: 0,
     max: 0,
@@ -26,6 +27,42 @@ function Bilan() {
       }
     })();
   }, []);
+=======
+  const [etudiants, setEtudiants] = useState([]);
+
+  useEffect(() => {
+  const charger = async () => {
+    try {
+      const response = await api.get("/etudiants");
+      setEtudiants(response.data);
+    } catch (error) {
+      console.error("Erreur chargement bilan :", error);
+      setEtudiants([]);
+    }
+  };
+
+  charger();
+}, []);
+
+
+
+  const moyennes = etudiants.map((e) => Number(e.moyenne));
+
+  const total = etudiants.length;
+  const admis = etudiants.filter((e) => Number(e.moyenne) >= 10).length;
+  const redoublants = etudiants.filter(
+    (e) => Number(e.moyenne) >= 5 && Number(e.moyenne) < 10
+  ).length;
+  const exclus = etudiants.filter((e) => Number(e.moyenne) < 5).length;
+
+  const moyenneGenerale =
+    total > 0
+      ? (moyennes.reduce((somme, note) => somme + note, 0) / total).toFixed(2)
+      : 0;
+
+  const moyenneMin = total > 0 ? Math.min(...moyennes) : 0;
+  const moyenneMax = total > 0 ? Math.max(...moyennes) : 0;
+>>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
 
   return (
     <>
@@ -92,7 +129,7 @@ function Bilan() {
           </div>
 
           <div className="card bg-black p-4 rounded-4">
-            <Graphe />
+            <Graphe etudiants={etudiants} />
           </div>
         </div>
       </div>

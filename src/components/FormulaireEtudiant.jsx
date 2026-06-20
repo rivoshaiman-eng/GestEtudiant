@@ -7,11 +7,13 @@ function FormulaireEtudiant() {
   const [prenom, setPrenom] = useState("");
   const [moyenne, setMoyenne] = useState("");
   const [message, setMessage] = useState("");
+  const [erreur, setErreur] = useState("");
 
   const ajouterEtudiant = async (e) => {
     e.preventDefault();
     setMessage("");
 
+<<<<<<< HEAD
     try {
       const payload = {
         nom,
@@ -30,6 +32,31 @@ function FormulaireEtudiant() {
       }
     } catch (err) {
       setMessage(err?.response?.data?.message || "Erreur lors de l'insertion");
+=======
+    setMessage("");
+    setErreur("");
+
+    try {
+      await api.post("/etudiants", {
+        numet: numEt,
+        nom: nom,
+        prenom: "-",
+        moyenne: Number(moyenne),
+      });
+
+      setMessage("✅ Étudiant ajouté dans MySQL");
+      setNumEt("");
+      setNom("");
+      setMoyenne("");
+    } catch (error) {
+      console.error("Erreur ajout étudiant :", error);
+
+      if (error.response?.status === 422) {
+        setErreur("❌ Vérifie les champs : numéro déjà utilisé ou information manquante.");
+      } else {
+        setErreur("❌ Erreur lors de l'ajout de l'étudiant");
+      }
+>>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
     }
   };
 
@@ -71,6 +98,9 @@ function FormulaireEtudiant() {
             <label className="form-label">Moyenne</label>
             <input
               type="number"
+              min="0"
+              max="20"
+              step="0.01"
               className="form-control form-control-lg"
               value={moyenne}
               onChange={(e) => setMoyenne(e.target.value)}
@@ -79,7 +109,10 @@ function FormulaireEtudiant() {
           </div>
 
           <div className="col-md-3">
-            <button className="btn btn-outline-light btn-lg w-100 rounded-4" type="submit">
+            <button
+              className="btn btn-outline-light btn-lg w-100 rounded-4"
+              type="submit"
+            >
               <i className="bi bi-plus-lg me-2"></i>
               Ajouter
             </button>
@@ -88,6 +121,7 @@ function FormulaireEtudiant() {
       </form>
 
       {message && <div className="alert alert-success mt-4">{message}</div>}
+      {erreur && <div className="alert alert-danger mt-4">{erreur}</div>}
     </>
   );
 }
