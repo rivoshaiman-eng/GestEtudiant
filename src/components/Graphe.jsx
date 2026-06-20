@@ -9,44 +9,10 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import { useEffect, useState } from "react";
-import api from "../services/api";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-<<<<<<< HEAD
-function Graphe() {
-  const [etudiants, setEtudiants] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get("/etudiants");
-        setEtudiants(data || []);
-      } catch (err) {
-        setEtudiants([]);
-      }
-    })();
-  }, []);
-
-  const labels = etudiants.map(() => ""); // efface les noms
-  const dataValues = etudiants.map((e) => Number(e.moyenne));
-
-  const backgroundColor = dataValues.map((m) =>
-    m >= 10 ? "#198754" : m >= 5 ? "#ffc107" : "#dc3545"
-  );
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Moyenne des étudiants",
-        data: dataValues,
-        backgroundColor,
-      }
-    ]
-=======
-function Graphe({ etudiants }) {
+function Graphe({ etudiants = [] }) {
   const data = {
     labels: etudiants.map((e) => e.nom),
     datasets: [
@@ -62,7 +28,6 @@ function Graphe({ etudiants }) {
         borderRadius: 8,
       },
     ],
->>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
   };
 
   const options = {
@@ -79,17 +44,9 @@ function Graphe({ etudiants }) {
       },
     },
     scales: {
-<<<<<<< HEAD
       x: {
-        ticks: {
-          color: "white",
-          display: false // ne pas afficher les labels des noms
-        },
-        grid: { display: false }
+        ticks: { color: "white" },
       },
-=======
-      x: { ticks: { color: "white" } },
->>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
       y: {
         beginAtZero: true,
         max: 20,

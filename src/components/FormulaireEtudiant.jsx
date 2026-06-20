@@ -4,35 +4,13 @@ import api from "../services/api";
 function FormulaireEtudiant() {
   const [numEt, setNumEt] = useState("");
   const [nom, setNom] = useState("");
-  const [prenom, setPrenom] = useState("");
   const [moyenne, setMoyenne] = useState("");
   const [message, setMessage] = useState("");
   const [erreur, setErreur] = useState("");
 
   const ajouterEtudiant = async (e) => {
     e.preventDefault();
-    setMessage("");
 
-<<<<<<< HEAD
-    try {
-      const payload = {
-        nom,
-        prenom,
-        numet: numEt,
-        moyenne: Number(moyenne),
-      };
-
-      const { data } = await api.post("/etudiants", payload);
-      if (data?.data) {
-        setMessage("✅ Insertion réussie");
-        setNumEt("");
-        setNom("");
-        setPrenom("");
-        setMoyenne("");
-      }
-    } catch (err) {
-      setMessage(err?.response?.data?.message || "Erreur lors de l'insertion");
-=======
     setMessage("");
     setErreur("");
 
@@ -50,13 +28,7 @@ function FormulaireEtudiant() {
       setMoyenne("");
     } catch (error) {
       console.error("Erreur ajout étudiant :", error);
-
-      if (error.response?.status === 422) {
-        setErreur("❌ Vérifie les champs : numéro déjà utilisé ou information manquante.");
-      } else {
-        setErreur("❌ Erreur lors de l'ajout de l'étudiant");
-      }
->>>>>>> 7a1de78 (Migration vers Laravel Mysql términée)
+      setErreur("❌ Erreur lors de l'ajout de l'étudiant");
     }
   };
 
@@ -80,16 +52,6 @@ function FormulaireEtudiant() {
               className="form-control form-control-lg"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="col-md-3">
-            <label className="form-label">Prénom</label>
-            <input
-              className="form-control form-control-lg"
-              value={prenom}
-              onChange={(e) => setPrenom(e.target.value)}
               required
             />
           </div>
